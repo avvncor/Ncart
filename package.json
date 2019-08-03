@@ -1,0 +1,16 @@
+{
+  "name": "ncart",
+  "version": "1.0.0",
+  "description": "Ncart is developed to learn basic and asvanced concepts in nodejs. Intended for opensource ecommerce platform for anyone",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Er.Amaan Imtiyaz",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "nodemon": "^1.19.1"
+  }
+}
