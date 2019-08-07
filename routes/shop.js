@@ -1,13 +1,9 @@
 var path = require('path');
 var express = require('express');
 var router = express.Router();
-var dir = require('../util/path')
 
-var adminData = require('./admin')
+var productControllers = require('../controllers/products')
 
-router.get('/',(req,res,next)=>{
-    console.log(adminData.products)
-    res.sendFile(path.join(dir,'views','shop.html'))
-})
+router.get('/', productControllers.getProducts)
 
 module.exports = router;
