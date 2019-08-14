@@ -2,8 +2,15 @@ var path = require('path');
 var express = require('express');
 var router = express.Router();
 
-var productControllers = require('../controllers/products')
+var shopControllers = require('../controllers/shop')
 
-router.get('/', productControllers.getProducts)
+router.get('/', shopControllers.getIndex)
+
+router.get('/products',shopControllers.getProducts)
+router.get('/products/:productId',shopControllers.getProduct)
+router.get('/cart',shopControllers.getCart)
+router.post('/cart',shopControllers.postCart)
+router.get('/orders',shopControllers.getOrders)
+router.get('/checkout',shopControllers.getCheckOut)
 
 module.exports = router;

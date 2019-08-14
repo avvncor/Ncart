@@ -2,11 +2,13 @@ var express = require('express');
 var path = require('path')
 var router = express.Router();
 var dir = require('../util/path')
-var productsControllers = require('../controllers/products')
+var adminControllers = require('../controllers/admin')
 
-router.get('/add-product', productsControllers.getAddProduct)
+router.get('/add-product', adminControllers.getAddProduct)
 
-router.post('/add-product', productsControllers.postAddProduct)
+router.get('/products', adminControllers.getProducts)
+
+router.post('/add-product', adminControllers.postAddProduct)
 
 module.exports = router
 
