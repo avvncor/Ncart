@@ -40,6 +40,7 @@ module.exports = class Product {
       getProductsFromFile(productsS =>{
         const prod = productsS.find(p=>p.id ===id)
         cb(prod)
+        console.log(prod)
        
       })
     }
