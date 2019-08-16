@@ -10,5 +10,7 @@ router.get('/products', adminControllers.getProducts)
 
 router.post('/add-product', adminControllers.postAddProduct)
 
+router.get('/edit-product/:productId',adminControllers.getEditProduct)
+
 module.exports = router
 
