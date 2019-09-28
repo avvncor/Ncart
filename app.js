@@ -22,7 +22,8 @@ app.use(express.static(path.join(__dirname,'public')))
 app.use(express.static(path.join(__dirname,'images'))) 
 
 app.use((req,res,next)=>{
-    User.findAll({where:{id:'1'}})
+
+    User.findAll({where:{id:'2'}})
     .then(user=>{
         req.user = user[0]
         next();
@@ -41,24 +42,30 @@ User.hasMany(Product)
 User.hasOne(Cart)
 Cart.belongsTo(User)
 ///
+Cart.belongsToMany(Product,{through:CartItem})
+Product.belongsToMany(Cart,{through:CartItem})
 
 
-sequelize.sync({force:true})
+sequelize
+//  .sync({force:true})
+ .sync()
 .then(result=>{
-    return User.findAll({where:{id:'1'}})
+    return User.findAll({where:{id:'2'}})
 })
 .then(user=>{
     if(user.length<=0)
     { 
         return User.create({name:'amaan',email:'yahoo'})
     }
-   
    return user
 })
-.then(user=>{
 
-    app.listen(2000)
-    console.log('listening')
+.then(user=>{
+    return user[0].createCart();
+})
+.then(cart=>{
+    app.listen(2000);
+    console.log('listening///////////////////////END//////////////////')
 })
 .catch(err=>{
     console.log('this is sequelize sync error '+ err)
