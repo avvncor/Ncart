@@ -15,6 +15,14 @@ var Product = require('./models/products');
 var User    = require('./models/user')
 var Cart = require('./models/cart')
 var CartItem = require('./models/cart-items')
+var Order = require('./models/order')
+var OrderItems = require('./models/orderItems')
+
+Order.belongsTo(User);
+User.hasMany(Order);
+
+Order.belongsToMany(Product,{through:OrderItems})
+Product.belongsToMany(Order,{through:OrderItems})
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}))
