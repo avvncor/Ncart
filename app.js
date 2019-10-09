@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var dir = require('./util/path')
 var errorController = require('./controllers/error')
 var mongoose = require('mongoose');
+var session = require('express-session')
 
 app.set('view engine','ejs')
 app.set('views','views')
@@ -13,13 +14,16 @@ var adminRoutes = require('./routes/admin')
 var shopRoutes = require('./routes/shop')
 var Product = require('./models/products');
 var User    = require('./models/user')
+var authRoutes = require('./routes/auth')
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}))
 
+//app.use(session({secret:'my secret', resave:false, saveUninitialized:false}))
+
 app.use((req,res,next)=>{
     User.findById('5d9a05f857c11e27c4b8673f')
-    .then(user=>{
+    .then(user=>{ 
         req.user=user;
         next();
     })
@@ -31,6 +35,7 @@ app.use(express.static(path.join(__dirname,'images')))
 
 app.use('/admin',adminRoutes)
 app.use(shopRoutes)
+app.use(authRoutes)
 
 app.use(errorController.get404)
 

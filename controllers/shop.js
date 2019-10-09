@@ -10,6 +10,7 @@ exports.getProducts = (req,res,next)=>{
           pageTitle: 'All Products',
           path: '/products',
           hasProducts: products.length > 0,
+          isAuthenticated:ireq.isLoggedIn
         })
   }); 
 }
@@ -20,7 +21,8 @@ exports.getProduct = (req,res,next)=>{
     res.render('shop/product-detail',{
       product:product,
       pageTitle:'Product Detail',  
-      path:'/products'  
+      path:'/products',
+      isAuthenticated:req.isLoggedIn
     })
   })
 }
@@ -31,6 +33,7 @@ exports.getIndex = (req,res,next)=>{
           prods: products,
           pageTitle: 'Shop',
           path: '/',
+          isAuthenticated:req.isLoggedIn
         })
     });
 }
@@ -45,7 +48,8 @@ exports.getCart = (req,res,next)=>{
           res.render('shop/cart', {
             pageTitle: 'Your Cart',
             path: '/cart',
-            products:products
+            products:products,
+            isAuthenticated:req.isLoggedIn 
           })
     })
     .catch(err=>console.log(err))  
@@ -74,7 +78,8 @@ exports.getOrders = (req,res,next)=>{
     res.render('shop/orders', {
       pageTitle: 'Your Orders',
       path: '/orders',
-      orders:orders
+      orders:orders,
+      isAuthenticated:req.isLoggedIn 
     }) 
   })
   .catch()
@@ -87,6 +92,7 @@ exports.deleteCartItem = (req,res,next)=>{
    .deleteItemFromCart(prodId)
    .then(cart=>{
      res.redirect('/cart')
+      
    })
   .catch(err=>console.log(err))
 }
@@ -97,6 +103,7 @@ exports.getCheckOut = (req,res,next)=>{
         prods: products,
         pageTitle: 'Checkout',
         path: '/cart',
+        isAuthenticated:req.isLoggedIn
       }) 
 }
 
@@ -130,4 +137,4 @@ exports.postOrder = (req,res,next)=>{
       res.redirect('/cart')
     })
     .catch(err=>console.log(err))
-}
+  }
