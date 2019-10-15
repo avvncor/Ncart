@@ -10,7 +10,7 @@ exports.getProducts = (req,res,next)=>{
           pageTitle: 'All Products',
           path: '/products',
           hasProducts: products.length > 0,
-          isAuthenticated:ireq.isLoggedIn
+          isAuthenticated:req.session.isLoggedIn
         })
   }); 
 }
@@ -22,7 +22,7 @@ exports.getProduct = (req,res,next)=>{
       product:product,
       pageTitle:'Product Detail',  
       path:'/products',
-      isAuthenticated:req.isLoggedIn
+      isAuthenticated:req.session.isLoggedIn
     })
   })
 }
@@ -33,7 +33,7 @@ exports.getIndex = (req,res,next)=>{
           prods: products,
           pageTitle: 'Shop',
           path: '/',
-          isAuthenticated:req.isLoggedIn
+          isAuthenticated:req.session.isLoggedIn
         })
     });
 }
@@ -49,7 +49,7 @@ exports.getCart = (req,res,next)=>{
             pageTitle: 'Your Cart',
             path: '/cart',
             products:products,
-            isAuthenticated:req.isLoggedIn 
+            isAuthenticated:req.session.isLoggedIn 
           })
     })
     .catch(err=>console.log(err))  
@@ -79,7 +79,7 @@ exports.getOrders = (req,res,next)=>{
       pageTitle: 'Your Orders',
       path: '/orders',
       orders:orders,
-      isAuthenticated:req.isLoggedIn 
+      isAuthenticated:req.session.isLoggedIn
     }) 
   })
   .catch()
@@ -103,7 +103,7 @@ exports.getCheckOut = (req,res,next)=>{
         prods: products,
         pageTitle: 'Checkout',
         path: '/cart',
-        isAuthenticated:req.isLoggedIn
+        isAuthenticated:req.session.isLoggedIn
       }) 
 }
 
@@ -123,7 +123,7 @@ exports.postOrder = (req,res,next)=>{
       
       order = new Order({
         user:{
-          name:req.user.name,
+          name:req.user.email,
           userId:req.user._id
         },
         products:products

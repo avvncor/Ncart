@@ -1,20 +1,19 @@
 var express = require('express');
-var path = require('path')
 var router = express.Router();
-var dir = require('../util/path')
 var adminControllers = require('../controllers/admin')
+var isAuth = require('../middleware/is-auth')
 
-router.get('/add-product', adminControllers.getAddProduct)
+router.get('/add-product', isAuth, adminControllers.getAddProduct)
 
-router.get('/products', adminControllers.getProducts)
+router.get('/products', isAuth, adminControllers.getProducts)
 
-router.post('/add-product', adminControllers.postAddProduct)
+router.post('/add-product', isAuth, adminControllers.postAddProduct)
 
-router.get('/edit-product/:productId',adminControllers.getEditProduct)
+router.get('/edit-product/:productId',isAuth, adminControllers.getEditProduct)
 
-router.post('/postEditProduct',adminControllers.postEditProduct)
+router.post('/postEditProduct',isAuth, adminControllers.postEditProduct)
 
-router.post('/delete-product',adminControllers.postDeleteProduct)
+router.post('/delete-product',isAuth, adminControllers.postDeleteProduct)
 
 module.exports = router
 

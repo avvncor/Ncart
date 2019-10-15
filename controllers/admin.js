@@ -5,7 +5,7 @@ exports.getAddProduct = (req,res,next)=>{
         pageTitle: 'Add Product',
         path: '/admin/add-product',
         editing:false,
-        isAuthenticated:req.isLoggedIn
+        isAuthenticated:req.session.isLoggedIn
       });
 }
 
@@ -21,7 +21,10 @@ exports.postAddProduct = (req,res,next)=>{
    product.save()
    .then(result=>{
        console.log('Product Created')
-       res.redirect('/admin/product')
+       return result
+   })
+   .then(result => {
+    res.redirect('/admin/products')
    })
    .catch(err=>console.log(err))
   
@@ -43,7 +46,7 @@ exports.getEditProduct = (req,res,next)=>{
             pageTitle:"Edit Product",
             editing:editMode,
             product:product,
-            isAuthenticated:req.isLoggedIn
+            isAuthenticated:req.session.isLoggedIn
         })
         
      }) 
@@ -53,19 +56,28 @@ exports.postEditProduct = (req,res,next)=>{
     const prodId = req.body.productId;
     Product.findById(prodId)
     .then(product =>{
+        
+        if(product.userId.toString() !== req.user._id.toString()){
+            return res.redirect('/')
+        }
+         
          product.title = req.body.title;
          product.price = req.body.price;
          product.description = req.body.description;
          product.imageUrl = req.body.imageUrl;
          product.userId = req.user._id;
-         return product.save();
+         return product.save()
+         .then(result => {
+              console.log('Product Updated');
+              res.redirect('/admin/products')
+            })
     })
-     .then(result=>{console.log('Product Updated');res.redirect('/admin/products')})
+     
     .catch(err=>{throw err})
 }
 
 exports.getProducts =  (req,res,next)=>{
-    Product.find()
+    Product.find({userId:req.user._id})
     .populate('userId')
     .then(products=>{
         console.log(products)
@@ -73,14 +85,21 @@ exports.getProducts =  (req,res,next)=>{
             prods:products,
             pageTitle: 'Admin Products',
             path: '/admin/products',   
-            isAuthenticated:req.isLoggedIn   
+            isAuthenticated:req.session.isLoggedIn   
           })
      })
     };
 
 exports.postDeleteProduct= (req,res,next)=>{
     const prodId = req.body.productId;
-    Product.findByIdAndDelete(prodId)
-    .then(result=>{console.log('Product Deleted '); res.redirect('/admin/products')})
-    .catch(err=>{throw err})
+
+    // Product.findByIdAndDelete(prodId)
+    Product.deleteOne({_id:prodId, userId:req.user._id})
+    .then(result => { 
+        console.log('Product Deleted ');
+         res.redirect('/admin/products')
+        })
+    .catch( err => {
+        throw err
+    })
 }
