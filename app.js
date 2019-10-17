@@ -9,6 +9,7 @@ var session = require('express-session')
 var MongoDbStore = require('connect-mongodb-session')(session);
 //var csurf = require('csrf');
 
+
 app.set('view engine','ejs')
 app.set('views','views')
 
@@ -39,11 +40,16 @@ app.use((req,res,next)=>{
     }
     User.findById(req.session.user._id)
     .then(user=>{ 
+        if(!user){
+            return next()
+        }
         req.user=user;
        // console.log(req.session.user)
         next();
     })
-    .catch(err=>console.log(err))
+    .catch(err=>{
+        throw new Error(err)
+    })
 })
 
 app.use(express.static(path.join(__dirname,'public')))

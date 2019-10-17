@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs')
 const User = require('../models/user')
 var nodemailer = require('nodemailer');
 var sendGridTransport = require('nodemailer-sendgrid-transport')
+var { validationResult } = require('express-validator/check')
+
 
 const transport = nodemailer.createTransport(sendGridTransport({
     auth:{  
@@ -15,18 +17,39 @@ exports.getLogin = (req,res,next)=>{
         res.render('auth/login',{
             path:'/login',
             pageTitle:'Login Auth',
-            isAuthenticated:req.session.isLoggedIn
+            isAuthenticated:req.session.isLoggedIn,
+            credentials: {email:'', password:''},
+            validationErrors:[]
         })
 }
 
 exports.postLogin = (req,res,next) =>{
     var email = req.body.email;
     var password = req.body.password;
+    var errors = validationResult(req)
+    if(!errors.isEmpty()){
+        console.log(errors.array())
+        return res.status(422).render('auth/login',{
+            path:'/login',
+            pageTitle:'Login',
+            isAuthenticated:req.session.isLoggedIn,
+            errorMessage:errors.array()[0].msg,
+            credentials: {email:req.body.email, password:req.body.password},
+            validationErrors:[{param:'email'},{param:'password'}]
+        })
+    }
 
     User.findOne({email:email})
     .then(user => {
         if(!user){
-            return res.redirect('/login')
+            return res.render('auth/login',{
+                path:'/login',
+                pageTitle:'Login',
+                errorMessage: 'Invalid email or password',
+                credentials:{ email:req.body.email, password:req.body.password },
+                validationErrors: [],
+                isAuthenticated: req.session.isLoggedIn
+            })
         }
         bcrypt.compare(password, user.password )
         .then(doMatch => {
@@ -38,7 +61,15 @@ exports.postLogin = (req,res,next) =>{
                res.redirect('/');
               })
             }
-            res.redirect('/login')
+           //
+           return res.render('auth/login',{
+            path:'/login',
+            pageTitle:'Login',
+            errorMessage: 'Invalid email or password',
+            credentials:{ email:req.body.email, password:req.body.password },
+            validationErrors: [],
+            isAuthenticated: req.session.isLoggedIn
+            })
         })
         .catch(err => {
             console.log(err)
@@ -55,14 +86,20 @@ exports.postLogout = (req,res,next) =>{
  }
 
  exports.postSignup = (req,res,next) =>{
-     User.findOne({email:req.body.email})
-     .then(userDoc=>{
-
-         if(userDoc){
-             return res.redirect('/login')
-         }
-
-         return bcrypt.hash(req.body.password, 12)
+     var errors = validationResult(req)
+     if(!errors.isEmpty()){
+         console.log(errors.array())
+         return res.status(422).render('auth/signup',{
+            path:'/signup',
+            pageTitle:'Signup',
+            isAuthenticated:req.session.isLoggedIn,
+            errorMessage:errors.array()[0].msg,
+            email:req.body.email, password:req.body.password,confirmPassword:req.body.confirmPassword,
+            validationErrors:errors.array()
+        } )
+     }
+         
+         bcrypt.hash(req.body.password, 12)
          .then(hashedPassword => {
             var user = new User({
                 email:req.body.email,
@@ -81,15 +118,16 @@ exports.postLogout = (req,res,next) =>{
              })
             .then(err => {console.log(err);res.redirect('/login')})
          })
-     })
-     .catch()
+        .catch( err => console.log(err))
  } 
 
  exports.getSignup = (req,res,next) =>{
      res.render('auth/signup',{
          path:'/signup',
          pageTitle:'Signup',
-         isAuthenticated:req.session.isLoggedIn
+         isAuthenticated:req.session.isLoggedIn,
+         email:'', password:'',confirmPassword:'',
+         validationErrors :[]
      })
  }
 
