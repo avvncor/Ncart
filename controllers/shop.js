@@ -25,6 +25,11 @@ exports.getProduct = (req,res,next)=>{
       isAuthenticated:req.session.isLoggedIn
     })
   })
+  .catch(err => {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error)
+ })
 }
 
 exports.getIndex = (req,res,next)=>{
@@ -35,7 +40,12 @@ exports.getIndex = (req,res,next)=>{
           path: '/',
           isAuthenticated:req.session.isLoggedIn
         })
-    });
+    })
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error)
+   })
 }
 
 exports.getCart = (req,res,next)=>{
@@ -52,7 +62,11 @@ exports.getCart = (req,res,next)=>{
             isAuthenticated:req.session.isLoggedIn 
           })
     })
-    .catch(err=>console.log(err))  
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error)
+   }) 
 }
 
 exports.postCart = (req,res,next)=>{
@@ -67,7 +81,11 @@ exports.postCart = (req,res,next)=>{
     console.log('product added to cart')
     
   })
-  .catch(err=>console.log(err))
+  .catch(err => {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error)
+ })
   res.redirect('/cart')
 }
 
@@ -82,7 +100,11 @@ exports.getOrders = (req,res,next)=>{
       isAuthenticated:req.session.isLoggedIn
     }) 
   })
-  .catch()
+  .catch(err => {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error)
+ })
   
 }
 
@@ -94,7 +116,11 @@ exports.deleteCartItem = (req,res,next)=>{
      res.redirect('/cart')
       
    })
-  .catch(err=>console.log(err))
+   .catch(err => {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error)
+ })
 }
 
 exports.getCheckOut = (req,res,next)=>{
@@ -136,5 +162,9 @@ exports.postOrder = (req,res,next)=>{
     .then((result)=>{
       res.redirect('/cart')
     })
-    .catch(err=>console.log(err))
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error)
+   })
   }
