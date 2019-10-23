@@ -13,5 +13,6 @@ router.get('/orders',isAuth,shopControllers.getOrders)
 // router.get('/checkout',shopControllers.getCheckOut)
 router.post('/delete-cart-item',isAuth, shopControllers.deleteCartItem)
 router.post('/create-order',isAuth, shopControllers.postOrder)
+router.get('/orders/:orderId',isAuth,shopControllers.getInvoice)
 
 module.exports = router;
