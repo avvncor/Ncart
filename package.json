@@ -18,7 +18,7 @@
     "intl": "^1.2.5",
     "jsonwebtoken": "^8.5.1",
     "karma-phantomjs-launcher": "^1.0.4",
-    "mongoose": "^5.6.5",
+    "mongoose": "^5.7.5",
     "mysql2": "^1.6.5",
     "nodemailer": "^6.3.0",
     "nodemailer-sendgrid-transport": "^0.2.0",
