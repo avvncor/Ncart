@@ -120,6 +120,7 @@ exports.postEditProduct = (req,res,next)=>{
 
 
     if(!errors.isEmpty()){
+	console.log(errors)
         console.log(errors.array())
        return res.status(422).render('admin/edit-product', {
             pageTitle: 'Edit Product',
